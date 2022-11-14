@@ -1,2 +1,3 @@
-1) BASH: mex ComputePrimes.cpp
-2) MATLAB: ComputePrimes(55)
+1) run buildme.sh  ($ mex ComputePrimes.cpp)
+2) matlab -nojvm -nodisplay
+3) within matlab: ComputePrimes(55)

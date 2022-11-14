@@ -1,4 +1,4 @@
-/* sqdist - computes pairwise squared Euclidean distances between points
+/* sqdist_mex - computes pairwise squared Euclidean distances between points
  * original version by Roland Bunschoten, 1999
  * implemented as a mex file by P.E. Hadjidoukas
  */
@@ -16,14 +16,14 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 	mxClassID category1, category2;
 	mwSize dims[2];
 
-	if (nrhs != 2) 
+	if (nrhs != 2)
 	{
 		mexErrMsgTxt("Two inputs required.");
-	} 
-	else if (nlhs > 1) 
+	}
+	else if (nlhs > 1)
 	{
 		mexErrMsgTxt("Too many output arguments");
-	}	
+	}
 
 	m1 = mxGetM(prhs[0]);
 	n1 = mxGetN(prhs[0]);
@@ -83,12 +83,11 @@ void process_single(mxArray *plhs[], const mxArray *prhs[], int n1, int n2)
 	for (i = 0; i < n1*n2; i++) {
 		div = i/n2;
 		mod = i%n2;
-		ii = div+mod*n1; 
+		ii = div+mod*n1;
 		si = a[div]-b[mod];
 		y[ii] = si*si;
 	}
 }
-
 
 void process_double(mxArray *plhs[], const mxArray *prhs[], int n1, int n2)
 {
@@ -104,9 +103,8 @@ void process_double(mxArray *plhs[], const mxArray *prhs[], int n1, int n2)
 	for (i = 0; i < n1*n2; i++) {
 		div = i/n2;
 		mod = i%n2;
-		ii = div+mod*n1; 
+		ii = div+mod*n1;
 		si = a[div]-b[mod];
 		y[ii] = si*si;
 	}
 }
-
