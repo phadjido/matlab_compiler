@@ -4,7 +4,7 @@
  *	A simple program to illustrate how to call MATLAB
  *	Engine functions from a C program.
  *
- * Copyright 1984-2011 The MathWorks, Inc.
+ * Copyright 1984-2016 The MathWorks, Inc.
  * All rights reserved
  */
 #include <stdlib.h>
@@ -22,11 +22,12 @@ int main()
 	double time[10] = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0 };
 
 	/*
-	 * Call engOpen with a NULL string. This starts a MATLAB process 
+	 * Call engOpen with a NULL string. This starts a MATLAB process
      * on the current host using the command "matlab".
 	 */
 	if (!(ep = engOpen(""))) {
 		fprintf(stderr, "\nCan't start MATLAB engine\n");
+		fprintf(stderr, "Check if csh is installed and MATLAB can be started from there\n");
 		return EXIT_FAILURE;
 	}
 
@@ -37,7 +38,7 @@ int main()
 	 * to MATLAB, analyze the data, and plot the result.
 	 */
 
-	/* 
+	/*
 	 * Create a variable for the data
 	 */
 	T = mxCreateDoubleMatrix(1, 10, mxREAL);
@@ -83,7 +84,7 @@ int main()
 	 * will evaluate the string and create the variable.  We
 	 * will then recover the variable, and determine its type.
 	 */
-	  
+
 	/*
 	 * Use engOutputBuffer to capture MATLAB output, so we can
 	 * echo it back.  Ensure first that the buffer is always NULL
@@ -94,6 +95,7 @@ int main()
 	engOutputBuffer(ep, buffer, BUFSIZE);
 	while (result == NULL) {
 	    char str[BUFSIZE+1];
+	    char *input = NULL;
 	    /*
 	     * Get a string input from the user
 	     */
@@ -103,18 +105,18 @@ int main()
 	    printf("For example: X = 1:5\n");
 	    printf(">> ");
 
-	    fgets(str, BUFSIZE, stdin);
-	  
+	    input = fgets(str, BUFSIZE, stdin);
+
 	    /*
 	     * Evaluate input with engEvalString
 	     */
 	    engEvalString(ep, str);
-	    
+
 	    /*
-	     * Echo the output from the command.  
+	     * Echo the output from the command.
 	     */
+
 	    printf("%s", buffer);
-	    
 	    /*
 	     * Get result of computation
 	     */
@@ -122,7 +124,7 @@ int main()
 	    if ((result = engGetVariable(ep,"X")) == NULL)
 	      printf("Oops! You didn't create a variable X.\n\n");
 	    else {
-		printf("X is class %s\t\n", mxGetClassName(result));
+		    printf("X is class %s\t\n", mxGetClassName(result));
 	    }
 	}
 
@@ -132,6 +134,6 @@ int main()
 	printf("Done!\n");
 	mxDestroyArray(result);
 	engClose(ep);
-	
+
 	return EXIT_SUCCESS;
 }
