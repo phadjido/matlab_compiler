@@ -31,43 +31,38 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 {
 	double t1, t2;
 
-	if (nrhs != 1) 
+	if (nrhs != 1)
 	{
 		mexErrMsgTxt("One input required.");
-	} 
-	else if (nlhs > 1) 
+	}
+	else if (nlhs > 1)
 	{
 		mexErrMsgTxt("Too many output arguments");
-	}	
+	}
 
 	/* The input must be a noncomplex scalar integer.*/
 	int mrows, ncols;
 	mrows = mxGetM(prhs[0]);
 	ncols = mxGetN(prhs[0]);
-	
-	if (!mxIsDouble(prhs[0]) || mxIsComplex(prhs[0]) || 
-		!(mrows == 1 && ncols == 1)) 
+
+	if (!mxIsDouble(prhs[0]) || mxIsComplex(prhs[0]) ||
+		!(mrows == 1 && ncols == 1))
 	{
 		mexErrMsgTxt("Input must be a noncomplex scalar integer.");
 	}
 
 	double x, *y;
-	/*
-		e.g.   
-				*x=4,
-				*y=2, 3, 5, 7
-	*/
-	
 	x = mxGetScalar(prhs[0]);
-		
+
 	/* Create matrix for the return argument. */
 	plhs[0] = mxCreateDoubleMatrix(mrows /* 1 */, (int) x, mxREAL);
 
 	y = mxGetPr(plhs[0]);
-	
+
 	//call ComputePrimes subroutines to fill vector of primes
 	t1 = getwtime();
-#if 1
+#if defined(USE_THREADS)
+#warning  "Using the multithreaded implementation"
 	g_n = (int)x;
 	g_y = y;
 
@@ -79,7 +74,8 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 	pthread_join(hThread[0], NULL);
 	pthread_join(hThread[1], NULL);
 #else
-	ComputePrimes(y, (int) x);	
+#warning  "Using the sequential implementation"
+	ComputePrimes(y, (int) x);
 #endif
 	t2 = getwtime();
 	printf("Elapsed time = %lf secs\n", t2-t1);
@@ -99,7 +95,7 @@ void *ComputePrimesThread(void *Param)
 		i = curr_i++;
 		index = global_index;
 		pthread_mutex_unlock(&cs);
-	
+
 		if (index != n)
 		{
 			printf("[%ld] Checking %d\n", myid, i);
