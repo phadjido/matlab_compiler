@@ -20,9 +20,9 @@
 
 double getwtime()
 {
-        struct timeval t;
-        gettimeofday(&t, NULL);
-        return (double)t.tv_sec + (double)t.tv_usec*1.0E-6;
+  struct timeval t;
+  gettimeofday(&t, NULL);
+  return (double)t.tv_sec + (double)t.tv_usec*1.0E-6;
 }
 
 /* Include the MCR header file and the library specific header file 
@@ -101,7 +101,7 @@ int main(int argc, char *argv[]){
 	MPI_Comm_rank(MPI_COMM_WORLD, &Me);
 	MPI_Comm_size(MPI_COMM_WORLD, &Procs);
 
-	printf("Hello from %d of %d (at %ld) [gt0 = %ld]\n", Me, Procs, getwtime()-gt0, gt0);
+	printf("Hello from %d of %d (at %.3lf) [gt0 = %.3lf]\n", Me, Procs, getwtime()-gt0, gt0);
 
 	t1 = getwtime();
     if( !mclInitializeApplication(NULL,0) )
@@ -110,52 +110,51 @@ int main(int argc, char *argv[]){
         exit(1);
     }
     t2 = getwtime();
-	printf("Initialization: %d msec (at %ld)\n", t2-t1, getwtime()-gt0);
+	printf("Initialization: %.3lf sec (at %.3lf)\n", t2-t1, getwtime()-gt0);
 
     /* Create the input data */
-	t1 = getwtime();
+    t1 = getwtime();
     in1 = mxCreateDoubleMatrix(3,3,mxREAL);
     in2 = mxCreateDoubleMatrix(3,3,mxREAL);
     memcpy(mxGetPr(in1), data, 9*sizeof(double));
     memcpy(mxGetPr(in2), data, 9*sizeof(double));
-	t2 = getwtime();
-	printf("Create input data: %d msec (at %ld)\n", t2-t1, getwtime()-gt0);
-    
+    t2 = getwtime();
+    printf("Create input data: %.3lf sec (at %.3lf)\n", t2-t1, getwtime()-gt0);
     /* Call the library intialization routine and make sure that the
      * library was initialized properly. */
 
-	t1 = getwtime();
+    t1 = getwtime();
     if (!libmatrixInitialize()){
         fprintf(stderr,"Could not initialize the library.\n");
         exit(1);
     }
-	t2 = getwtime();
+    t2 = getwtime();
 
-	printf("Library initialization: %d msec (at %ld)\n", t2-t1, getwtime()-gt0);
+    printf("Library initialization: %.3lf sec (at %.3lf)\n", t2-t1, getwtime()-gt0);
 
-	MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);
 
-	ThreadOne(0);
-	sleep(5);
-	MPI_Barrier(MPI_COMM_WORLD);
-	ThreadTwo(0);
-	sleep(5);
-	MPI_Barrier(MPI_COMM_WORLD);
-	ThreadThree(0);
-	sleep(5);
-	MPI_Barrier(MPI_COMM_WORLD);
+    ThreadOne(0);
+    sleep(5);
+    MPI_Barrier(MPI_COMM_WORLD);
+    ThreadTwo(0);
+    sleep(5);
+    MPI_Barrier(MPI_COMM_WORLD);
+    ThreadThree(0);
+    sleep(5);
+    MPI_Barrier(MPI_COMM_WORLD);
 
     /* Call the library termination routine */
     libmatrixTerminate();
-    
+
     /* Free the memory created */
     mxDestroyArray(in1); in1=0;
-    mxDestroyArray(in2); in2 = 0;
+    mxDestroyArray(in2); in2=0;
     mclTerminateApplication();
 
-	MPI_Barrier(MPI_COMM_WORLD);
-	printf("Goodbye from %d of %d (at %ld)\n", Me, Procs, getwtime()-gt0);
-	MPI_Finalize();
+    MPI_Barrier(MPI_COMM_WORLD);
+    printf("Goodbye from %d of %d (at %.3lf)\n", Me, Procs, getwtime()-gt0);
+    MPI_Finalize();
     return 0;
 }
 
