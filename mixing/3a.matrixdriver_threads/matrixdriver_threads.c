@@ -101,16 +101,16 @@ int main(){
 		exit(1);
 	}
 	t2 = getwtime();
-	printf("Initialization: %d msec\n", t2-t1);
+	printf("Initialization: %.3lf sec\n", t2-t1);
 
 	/* Create the input data */
-	t1 = getwtime(); 
+	t1 = getwtime();
 	in1 = mxCreateDoubleMatrix(3,3,mxREAL);
 	in2 = mxCreateDoubleMatrix(3,3,mxREAL);
 	memcpy(mxGetPr(in1), data, 9*sizeof(double));
 	memcpy(mxGetPr(in2), data, 9*sizeof(double));
-	t2 = getwtime(); 
-	printf("Create input data: %d msec\n", t2-t1);
+	t2 = getwtime();
+	printf("Create input data: %.3lf sec\n", t2-t1);
 
 	/* Call the library intialization routine and make sure that the
 	 * library was initialized properly. */
@@ -122,7 +122,7 @@ int main(){
 	}
 	t2 = getwtime();
 
-	printf("Library initialization: %d msec\n", t2-t1);
+	printf("Library initialization: %.3lf sec\n", t2-t1);
 
 	dwID[0] = 0;
 	dwID[1] = 1;
@@ -139,7 +139,7 @@ int main(){
 	libmatrixTerminate();
 
 	/* Free the memory created */
-	mxDestroyArray(in1); in1=0;
+	mxDestroyArray(in1); in1 = 0;
 	mxDestroyArray(in2); in2 = 0;
 	mclTerminateApplication();
 	return 0;
