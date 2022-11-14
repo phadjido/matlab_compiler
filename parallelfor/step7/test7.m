@@ -19,7 +19,7 @@ if rank == 0
 	A=A+B;	% accumulate using the output of the previous step
 
 	mpibarrier();
-	tic 
+	tic
 	B = pdriver_mpi(A,N,P);
 	toc
 	[A;B]

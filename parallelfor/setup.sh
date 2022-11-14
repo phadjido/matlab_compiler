@@ -1,4 +1,3 @@
-MATLAB_ROOT=/usr/local/MATLAB/R2015b
-MPI_ROOT=/opt/mpich
+MATLAB_ROOT=/usr/local/MATLAB/R2017b
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MATLAB_ROOT/bin/glnxa64:$MATLAB_ROOT/runtime/glnxa64:$MPI_ROOT/lib:.
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MATLAB_ROOT/bin/glnxa64:$MATLAB_ROOT/runtime/glnxa64

@@ -17,11 +17,11 @@ end
 void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 {
 	int m, n;
-        m = mxGetM(prhs[0]);
-        n = mxGetN(prhs[0]);
+	m = mxGetM(prhs[0]);
+	n = mxGetN(prhs[0]);
 
 	printf("m = %d\n", m);
-        printf("n = %d\n", n);
+	printf("n = %d\n", n);
 
 	double *A = mxGetPr(prhs[0]);		/* input array A */
 	int N = mxGetScalar(prhs[1]);		/* size of A */
@@ -48,7 +48,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 
 		in[0] = mxCreateDoubleMatrix(1,C,mxREAL);	/* part of A */
 		double *A_in = mxGetPr(in[0]);
-		memcpy(A_in, &A[a], C*sizeof(double)); 
+		memcpy(A_in, &A[a], C*sizeof(double));
 
 		in[1] = mxCreateDoubleScalar(C);
 
@@ -73,7 +73,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 		int b = a + C;
 
 		Bp[i] = mxGetPr(out[i]);
-		memcpy(&B[a], Bp[i], C*sizeof(double)); 
+		memcpy(&B[a], Bp[i], C*sizeof(double));
 		mxDestroyArray(out[i]);
 	}
 

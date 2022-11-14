@@ -5,7 +5,7 @@ mpiinit();
 rank=mpirank()
 size=mpisize()
 
-% N, P, C are common 
+% N, P, C are common
 N=8;	% problem size
 P=size;	% number of processors
 C=N/P;	% work per processor
@@ -15,7 +15,7 @@ if rank == 0		% master
 	A=1:N;		% initialize A
 
 	mpibarrier();	% synchronize (not required here)
-	tic 
+	tic
 	B = pdriver_mpi(A,N,P);		% parallel work - master
 	toc
 	[A;B]

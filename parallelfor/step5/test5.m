@@ -14,7 +14,7 @@ if rank == 0		% only rank zero does something useful
 
 	A=1:N;
 
-	tic 
+	tic
 	B = pdriver_seq(A,N,P);
 	%B = pdriver(A,N,P);
 	toc
@@ -23,7 +23,7 @@ if rank == 0		% only rank zero does something useful
 
 	mpibarrier();
 else
-	mpibarrier();		% any other process (rank) just waits for the master to finish 
+	mpibarrier();		% any other process (rank) just waits for the master to finish
 end
 
 mpifinalize();
