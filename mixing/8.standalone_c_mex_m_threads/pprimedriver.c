@@ -45,13 +45,13 @@ void *ThreadDriverRoutine(void *arg)
 	struct Work_t *work = (struct Work_t *) arg;
 	int id = work->id;
 
-	printf("[%ld] Hello work from thread (%lf)\n", id, getwtime()-gt0); fflush(0);
+	printf("[%d] Hello work from thread (%lf)\n", id, getwtime()-gt0); fflush(0);
 
-	mlfCallprimes(1, work->out, work->in);/* This function is called by a separate Matlab server thread,
+	mlfCallprimes(1, (mxArray **)work->out, work->in);/* This function is called by a separate Matlab server thread,
 						which means that it make no sense to be called in parallel!!!
 						mlfCallprimes calls the generic routine mclMlfFeval */
 
-	printf("[%ld] Goodbye work from thread (%lf)\n", id, getwtime()-gt0); fflush(0);
+	printf("[%d] Goodbye work from thread (%lf)\n", id, getwtime()-gt0); fflush(0);
 
 	return 0;
 }
@@ -84,17 +84,17 @@ int main(){
 
 	/* Call the library function */
 	gt0 = getwtime();
-	printf("[%ld] Creating two threads (%ld)\n", -1, 0);
+	printf("[%d] Creating two threads (%d)\n", -1, 0);
 	t1 = getwtime();
 #if 1
 	work[0].in = in1;
-	work[0].out = &out1;
+	work[0].out = (mxArray *)&out1;
 	work[0].id = 0;
 
 	pthread_create(&hThread[0], NULL, ThreadDriverRoutine, &work[0]);
 
 	work[1].in = in2;
-	work[1].out = &out2;
+	work[1].out = (mxArray *)&out2;
 	work[1].id = 1;
 
 	pthread_create(&hThread[1], NULL, ThreadDriverRoutine, &work[1]);
@@ -107,7 +107,7 @@ int main(){
 #endif
 	t2 = getwtime();
 
-	printf("[%ld] Elapsed Time = %lf secs\n", -1, t2-t1);
+	printf("[%d] Elapsed Time = %lf secs\n", -1, t2-t1);
 
 	/* Display the return value of the library function */
 	printf("The 1st vector of primes is:\n");
@@ -118,15 +118,15 @@ int main(){
 
 	mxDestroyArray(out1); out1=0;
 	mxDestroyArray(out2); out2=0;
-    
+
 	/* Call the library termination routine */
 	libprimeTerminate();
-    
+
 	/* Free the memory created */
 	mxDestroyArray(in1); in1=0;
 	mxDestroyArray(in2); in2=0;
 	mclTerminateApplication();
-    
+
 	return 0;
 }
 
@@ -143,10 +143,10 @@ void display_vector(const mxArray* in)
 
     /* Get a pointer to the double data in mxArray */
     data = mxGetPr(in);
-    
+
     /* Loop through the data and display the same in matrix format */
-    for( i = 0; i < c; i++ ){
-		printf("%4.2f\t",data[i]);
+    for( i = 0; i < c; i++ ) {
+			printf("%4.2f\t",data[i]);
     }
     printf("\n");
 }
