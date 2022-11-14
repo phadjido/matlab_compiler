@@ -1,0 +1,2 @@
+1) BASH: mex ComputePrimes.cpp
+2) MATLAB: ComputePrimes(55)

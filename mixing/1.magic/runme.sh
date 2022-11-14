@@ -1,0 +1,1 @@
+mcc -mv magicsquare.m
