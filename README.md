@@ -1,17 +1,21 @@
-# matlab_compiler
+# Matlab and C
+
+## parfor
+Matlab parallel computing toolbox
 
 ## engine
-matlab engine
-
-## examples
-simple mex files
+Matlab engine
 
 ## mixing
 Mixing/coupling Matlab and C
 
+## mex_examples
+Some mex files
+
 ## parallelfor
 How to parallelize a for loop
 
-## parfor
-Matlab parallel toolbox
+## octave
+Some examples for octave
+
 
