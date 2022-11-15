@@ -5,6 +5,8 @@ b=rand(1024,1024);
 memusage_mex()
 
 tic; sqdist(a,b); toc
+tic; sqdist(a,b); toc
+tic; sqdist_mex(a,b); toc
 tic; sqdist_mex(a,b); toc
 
 a=rand(4,4)

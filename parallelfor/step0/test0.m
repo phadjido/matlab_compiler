@@ -1,8 +1,9 @@
+% test0.m
 N=8
 
 A=1:N;
 
-tic 
+tic
 %parfor i = 1:N
 for i = 1:N
 	pause(1)
