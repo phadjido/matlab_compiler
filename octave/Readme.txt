@@ -1,0 +1,137 @@
+Source: https://www.gnu.org/software/octave/doc/interpreter/Standalone-Programs.html
+
+A.3 Standalone Programs
+
+The libraries Octave itself uses can be utilized in standalone applications.
+These applications then have access, for example, to the array and matrix classes, as well as to all of the Octave algorithms.
+The following C++ program, uses class Matrix from liboctave.a or liboctave.so.
+
+#include <iostream>
+#include <octave/oct.h>
+
+int
+main (void)
+{
+  std::cout << "Hello Octave world!\n";
+
+  int n = 2;
+  Matrix a_matrix = Matrix (n, n);
+
+  for (octave_idx_type i = 0; i < n; i++)
+    for (octave_idx_type j = 0; j < n; j++)
+      a_matrix(i,j) = (i + 1) * 10 + (j + 1);
+
+  std::cout << a_matrix;
+
+  return 0;
+}
+
+mkoctfile can be used to build a standalone application with a command like
+
+$ mkoctfile --link-stand-alone standalone.cc -o standalone
+$ ./standalone
+Hello Octave world!
+  11 12
+  21 22
+$
+
+Note that the application standalone will be dynamically linked against the Octave libraries and any Octave support libraries.
+The above allows the Octave math libraries to be used by an application.
+It does not, however, allow the script files, oct-files, or built-in functions of Octave to be used by the application.
+To do that the Octave interpreter needs to be initialized first.
+An example of how to do this can then be seen in the code
+
+#include <iostream>
+#include <octave/oct.h>
+#include <octave/octave.h>
+#include <octave/parse.h>
+#include <octave/toplev.h>
+
+int
+main (void)
+{
+  string_vector argv (2);
+  argv(0) = "embedded";
+  argv(1) = "-q";
+
+  octave_main (2, argv.c_str_vec (), 1);
+
+  octave_idx_type n = 2;
+  octave_value_list in;
+
+  for (octave_idx_type i = 0; i < n; i++)
+    in(i) = octave_value (5 * (i + 2));
+
+  octave_value_list out = feval ("gcd", in, 1);
+
+  if (! error_state && out.length () > 0)
+    std::cout << "GCD of ["
+              << in(0).int_value ()
+              << ", "
+              << in(1).int_value ()
+              << "] is " << out(0).int_value ()
+              << std::endl;
+  else
+    std::cout << "invalid\n";
+
+  clean_up_and_exit (0);
+}
+
+which, as before, is compiled and run as a standalone application with
+
+$ mkoctfile --link-stand-alone embedded.cc -o embedded
+$ ./embedded
+GCD of [10, 15] is 5
+$
+
+It is worth noting that, if only built-in functions are to be called from a C++ standalone program,
+then it does not need to initialize the interpreter to do so.
+The general rule is that, for a built-in function named function_name in the interpreter,
+there will be a C++ function named Ffunction_name (note the prepended capital F) accessible in the C++ API.
+The declarations for all built-in functions are collected in the header file builtin-defun-decls.h.
+This feature should be used with care as the list of built-in functions can change.
+No guarantees can be made that a function that is currently built in won't be implemented as
+a .m file or as a dynamically linked function in the future.
+An example of how to call built-in functions from C++ can be seen in the code
+
+#include <iostream>
+#include <octave/oct.h>
+#include <octave/builtin-defun-decls.h>
+
+int
+main (void)
+{
+  int n = 2;
+  Matrix a_matrix = Matrix (n, n);
+
+  for (octave_idx_type i = 0; i < n; i++)
+    for (octave_idx_type j = 0; j < n; j++)
+      a_matrix(i,j) = (i + 1) * 10 + (j + 1);
+
+  std::cout << "This is a matrix:" << std::endl
+            << a_matrix            << std::endl;
+
+  octave_value_list in;
+  in(0) = a_matrix;
+
+  octave_value_list out = Fnorm (in, 1);
+  double norm_of_the_matrix = out(0).double_value ();
+
+  std::cout << "This is the norm of the matrix:" << std::endl
+            << norm_of_the_matrix                << std::endl;
+
+  return 0;
+}
+
+which, again, is compiled and run as a standalone application with
+
+$ mkoctfile --link-stand-alone standalonebuiltin.cc -o standalonebuiltin
+$ ./standalonebuiltin
+This is a matrix:
+ 11 12
+ 21 22
+
+This is the norm of the matrix:
+34.4952
+$
+
